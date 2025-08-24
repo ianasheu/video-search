@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="fr">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+		<link rel="icon" type="image/png" href="./favicon.png">
+		<title>VIDEO</title>
+		<meta name="description" content="Recherche vidéos">
+		<meta name="author" content="contact@ianasheu.com">
+		<link rel="stylesheet" type="text/css" href="./assets/css/video-style.css">
+		<script type="text/javascript" src="./assets/js/video-script.js"></script>
+		<!-- <link rel="manifest" type="application/manifest+json" href="./manifest.json"> -->
+		<script>
+		/*	if ('serviceWorker' in navigator) {
+				navigator.serviceWorker
+					.register('./service-worker.js')
+					.then((registration) => {
+						// console.log('Service Worker registered successfully');
+					})
+					.catch((error) => {
+						console.log('Service Worker registration failed');
+					});
+			}	*/
+		</script>
+	</head>
+	<body>
+		<div class="maintitle">
+			<div class="splitbetween"><div><h1>VIDEO</h1></div><div><img id="camera" class="camera" src="./assets/img/camera.svg" alt="camera" title="Mémorisation"></div></div>
+			<p id="docapi">Consulter <a href="https://www.ianasheu.com/video/README.md.html" target="_blank">la doc API</a> pour plus de details</p>
+		</div>
+		<form id="searchform" class="searchform">
+			<div class="formblock1">
+				<div>
+					<div id="searchkeyword">
+						<div><label for="keyword"><b>Titre</b>&nbsp;et/ou&nbsp;<b>Réalisateur</b></label></div>
+						<div><input type="text" id="keyword" placeholder="Rechercher"></div>
+					</div>
+					<fieldset id="searchmoviedirector">
+						<div>
+							<div><label for="movie"><b>Titre</b></label></div>
+							<div><input type="text" id="movie" placeholder="Rechercher"></div>
+						</div>
+						<div>
+							<div><label for="director"><b>Réalisateur</b></label></div>
+							<div><input type="text" id="director" placeholder="Rechercher"></div>
+						</div>
+					</fieldset>
+				</div>
+				<fieldset>
+					<div class="splitbetween"><legend><b>Catégorie</b></legend><div><a id="resetcategory" href="javascript:void(0);">Reset</a></div></div>
+					<div id="categorylist" class="selectlist">
+					</div>
+				</fieldset>
+			</div>
+			<div class="formblock2">
+				<fieldset>
+					<legend><b>Année</b></legend>
+					<div><label for="minyearinput" class="rangelabel">Depuis</label><input type="range" id="minyearinput" min="1920" max="2030" step="10" value="1920">&nbsp;&ge;&nbsp;<span class="rangeoutput" id="minyearoutput">____</span></div>
+					<div><label for="maxyearinput" class="rangelabel">Jusqu'à</label><input type="range" id="maxyearinput" min="1920" max="2030" step="10" value="2030">&nbsp;&lt;&nbsp;<span class="rangeoutput" id="maxyearoutput">____</span></div>
+				</fieldset>
+				<fieldset>
+					<legend><b>Note</b></legend>
+					<div><label for="minratinginput" class="rangelabel">Depuis</label><input type="range" id="minratinginput" min="0" max="5" step="0.5" value="0">&nbsp;&ge;&nbsp;<span class="rangeoutput" id="minratingoutput">__</span></div>
+					<div><label for="maxratinginput" class="rangelabel">Jusqu'à</label><input type="range" id="maxratinginput" min="0" max="5" step="0.5" value="5">&nbsp;&le;&nbsp;<span class="rangeoutput" id="maxratingoutput">__</span></div>
+				</fieldset>
+				<div id="searchstrict" class="splitbetween"><div><label for="strict"><b>Mode strict</b></label></div><div><input type="checkbox" id="strict"></div></div>
+			</div>
+			<div class="formblock3">
+				<fieldset>
+					<legend><b>Trier&nbsp;par</b></legend>
+					<div><input type="radio" id="orderbytitle" name="orderby" value="title" checked>&nbsp;<label for="orderbytitle">Titres</label></div>
+					<div><input type="radio" id="orderbyyearasc" name="orderby" value="yearasc">&nbsp;<label for="orderbyyearasc"><span class="orderbylabel">Années</span><img class="sortasc" src="./assets/img/arrow-up.svg" alt="yearasc" title="Années croissantes"></label></div>
+					<div><input type="radio" id="orderbyyeardesc" name="orderby" value="yeardesc">&nbsp;<label for="orderbyyeardesc"><span class="orderbylabel">Années</span><img class="sortdesc" src="./assets/img/arrow-down.svg" alt="yeardesc" title="Années décroissantes"></label></div>
+					<div><input type="radio" id="orderbyratingasc" name="orderby" value="ratingasc">&nbsp;<label for="orderbyratingasc"><span class="orderbylabel">Notes</span><img class="sortasc" src="./assets/img/arrow-up.svg" alt="ratingasc" title="Notes croissante"></label></div>
+					<div><input type="radio" id="orderbyratingdesc" name="orderby" value="ratingdesc">&nbsp;<label for="orderbyratingdesc"><span class="orderbylabel">Notes</span><img class="sortdesc" src="./assets/img/arrow-down.svg" alt="ratingdesc" title="Notes décroissante"></label></div>
+				</fieldset>
+				<div><button type="button" id="resetall">Effacer</button></div>
+			</div>
+		</form>
+		<div id="loadsome" class="loadsome"></div>
+		<div id="deck" class="deck"></div>
+		<div id="loadmore" class="loadmore"></div>
+	</body>
+</html>

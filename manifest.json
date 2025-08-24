@@ -1,0 +1,36 @@
+{
+	"name": "VIDEO",
+	"short_name": "VIDEO",
+	"description": "Recherche vidéos",
+	"theme_color": "#E8E8E8",
+	"background_color": "#303030",
+	"orientation": "portrait",
+	"display": "fullscreen",
+	"lang": "fr",
+	"scope": "/",
+	"start_url": "./front.html",
+	"icons": [
+		{
+			"src": "./favicon.png",
+			"type": "image/png",
+			"sizes": "256x256",
+			"purpose": "any"
+		}
+	],
+	"screenshots": [
+		{
+			"src": "./assets/img/screenshot-narrow.jpg",
+			"sizes": "535x690",
+			"type": "image/jpg",
+			"form_factor": "narrow",
+			"label": "VIDEO"
+		},
+		{
+			"src": "./assets/img/screenshot-wide.jpg",
+			"sizes": "810x390",
+			"type": "image/jpg",
+			"form_factor": "wide",
+			"label": "VIDEO"
+		}
+	]
+}
