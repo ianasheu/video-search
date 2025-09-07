@@ -735,7 +735,9 @@ function setForm(newstrict, newkeyword, newmovie, newdirector, newcategory, newm
 	maxratingoutput.textContent = newmaxratinginput;
 
 	document.querySelector('input[name="orderby"][value="'+(neworderby == undefined ? initorderby : neworderby)+'"]').checked = true;
+
 	searchform.dispatchEvent(new Event('input', { bubbles: true }));
+	window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 
