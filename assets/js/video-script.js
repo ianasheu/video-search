@@ -59,14 +59,11 @@ document.addEventListener('DOMContentLoaded', function () {
 	clearCache();
 	initCategoryList();
 	initYearRatingRanges();
-	initStrictSwitch();
 
 
 	/* store initial search form values */
 	window.initstrict = document.getElementById("strict").checked;
 	window.initkeyword = document.getElementById("keyword").value.trim().replace(/\s+/g, " ");
-	window.initmovie = document.getElementById("movie").value.trim().replace(/\s+/g, " ");
-	window.initdirector = document.getElementById("director").value.trim().replace(/\s+/g, " ");
 	window.initminyearinput = document.getElementById("minyearinput").value;
 	window.initmaxyearinput = document.getElementById("maxyearinput").value;
 	window.initminratinginput = document.getElementById("minratinginput").value;
@@ -78,8 +75,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
 	window.previousstrict = initstrict;
 	window.previouskeyword = initkeyword;
-	window.previousmovie = initmovie;
-	window.previousdirector = initdirector;
 	window.previousminyearinput = initminyearinput;
 	window.previousmaxyearinput = initmaxyearinput;
 	window.previousminratinginput = initminratinginput;
@@ -90,8 +85,8 @@ document.addEventListener('DOMContentLoaded', function () {
 	/* initialize main ajax request object */
 	let request = new XMLHttpRequest();
 	request.addEventListener('load', () => displayResult(request.responseURL, request.status, request.response, parseInt(request.getResponseHeader("X-Total-Count"))));
+	request.addEventListener('timeout', () => timeoutFromAjax());
 	request.addEventListener('abort', () => console.log("Annulation Ajax"));
-	request.addEventListener('timeout', () => console.log("Timeout Ajax"));
 	request.addEventListener('error', () => console.log("Erreur Ajax"));
 	request.timeout = ajaxTimeout;
 	request.responseType = "json";
@@ -207,33 +202,13 @@ document.addEventListener('DOMContentLoaded', function () {
 	}
 
 
-	/* initialize strict mode switch */
-	function initStrictSwitch() {
-		let strict = document.getElementById("strict");
-		let searchkeyword = document.getElementById("searchkeyword");
-		let searchmoviedirector = document.getElementById("searchmoviedirector");
-		strict.addEventListener('change', () => {
-			if (!strict.checked) {
-				searchkeyword.style.display = 'initial';
-				searchmoviedirector.style.display = 'none';
-			} else {
-				searchkeyword.style.display = 'none';
-				searchmoviedirector.style.display = 'initial';
-			}
-		});
-	}
-
-
 	/* check for search form changes */
 	function formChange() {
 
 		const previousURLpath = URLpath, previousURLorderfilter = URLorderfilter;
-		let currentsearchkeyword = '', currentsearchmoviedirector = '';
 		let currentURLpath = '', currentURLorderfilter = '';
 		const currentstrict = document.getElementById("strict").checked;
 		const currentkeyword = document.getElementById("keyword").value.trim().replace(/\s+/g, " ");
-		const currentmovie = document.getElementById("movie").value.trim().replace(/\s+/g, " ");
-		const currentdirector = document.getElementById("director").value.trim().replace(/\s+/g, " ");
 		let currentcategory = new Array();
 		document.querySelectorAll('input[id^="category"]:checked').forEach((chk) => {currentcategory.push(parseInt(chk.value))});
 		const currentminyearinput = document.getElementById("minyearinput").value;
@@ -260,38 +235,7 @@ document.addEventListener('DOMContentLoaded', function () {
 					rewritedkeyword += match[2].split(' ').map(mot => encodeURIComponent(mot)).join('*');
 				}
 			}
-			currentsearchkeyword+= "/keyword/*"+rewritedkeyword+"*";
-		}
-		if ((currentmovie != previousmovie && currentmovie != initmovie) || currentmovie != initmovie) {
-			const regex = /"([^"]+)"|([^"]+)/g;
-			let rewritedmovie = '';
-			let match;
-			while ((match = regex.exec(currentmovie)) !== null) {
-				if (match[1]) {
-					rewritedmovie += match[1].split(' ').map(mot => encodeURIComponent(mot)).join('+');
-				} else if (match[2]) {
-					rewritedmovie += match[2].split(' ').map(mot => encodeURIComponent(mot)).join('*');
-				}
-			}
-			currentsearchmoviedirector += "/movie/*"+rewritedmovie+"*";
-		}
-		if ((currentdirector != previousdirector && currentdirector != initdirector) || currentdirector != initdirector) {
-			const regex = /"([^"]+)"|([^"]+)/g;
-			let rewriteddirector = '';
-			let match;
-			while ((match = regex.exec(currentdirector)) !== null) {
-				if (match[1]) {
-					rewriteddirector += match[1].split(' ').map(mot => encodeURIComponent(mot)).join('+');
-				} else if (match[2]) {
-					rewriteddirector += match[2].split(' ').map(mot => encodeURIComponent(mot)).join('*');
-				}
-			}
-			currentsearchmoviedirector += "/director/*"+rewriteddirector+"*";
-		}
-		if (!currentstrict) {
-			currentURLpath += currentsearchkeyword;
-		} else {
-			currentURLpath += currentsearchmoviedirector;
+			currentURLpath += "/keyword/*"+rewritedkeyword+"*";
 		}
 		if ((currentcategory.toString() != previouscategory.toString() && currentcategory.toString() != initcategory.toString()) || currentcategory.toString() != initcategory.toString()) {
 			currentURLpath += "/category/"+currentcategory.toString();
@@ -312,8 +256,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
 		previousstrict = currentstrict;
 		previouskeyword = currentkeyword;
-		previousmovie = currentmovie;
-		previousdirector = currentdirector;
 		previouscategory = currentcategory.slice();
 		previousminyearinput = currentminyearinput;
 		previousmaxyearinput = currentmaxyearinput;
@@ -415,6 +357,7 @@ document.addEventListener('DOMContentLoaded', function () {
 				loadsome.innerHTML = "... Chargement ...";
 			}
 			startTime = performance.now()/1000;
+
 			try {
 				request.open("GET", URL, true);
 				request.setRequestHeader('x-api-key', apiKey);
@@ -423,6 +366,44 @@ document.addEventListener('DOMContentLoaded', function () {
 				console.log("Catch Ajax");
 			}
 		}
+	}
+
+
+	/* ajax timeout */
+	function timeoutFromAjax() {
+
+		if (showLog) console.log("Timeout Ajax");
+
+		const msg = document.createElement("span");
+		const retryLink = document.createElement("a");
+		retryLink.href = "#";
+		retryLink.textContent = "Echec, réessayer";
+		retryLink.addEventListener("click", (event) => {
+			event.preventDefault();
+			retryFromAjax();
+		});
+		msg.appendChild(retryLink);
+
+		if (offset > 0) {
+			loadmore.innerHTML = "";
+			loadmore.appendChild(msg);
+		} else {
+			loadsome.innerHTML = "";
+			loadsome.appendChild(msg);
+		}
+	}
+
+
+	/* retry ajax */
+	function retryFromAjax() {
+
+		completeURL = APIroot + '/search' + URLpath +
+		(URLorderfilter || URLoffsetfilter ? "?" : '') +
+		(URLorderfilter ? URLorderfilter : '') +
+		(URLorderfilter && URLoffsetfilter ? "&" : '') +
+		(URLoffsetfilter ? URLoffsetfilter : '');
+		if (showLog) console.log("Retry URL: "+completeURL);
+		getFromAjax(completeURL);
 	}
 
 
@@ -446,23 +427,23 @@ document.addEventListener('DOMContentLoaded', function () {
 					movie.category.forEach((cat) => { movie.categorytagtitle += `${cat.tag}, `; });
 					movie.categorytagtitle = movie.categorytagtitle.slice(0, -2);
 					movie.categorysearchtag = '';
-					movie.category.forEach((cat) => { movie.categorysearchtag += `<span onclick="setForm(null, null, null, null, '${cat.id}', null, null, null, null, 'title')">${cat.tag}</span>, `; });
+					movie.category.forEach((cat) => { movie.categorysearchtag += `<span onclick="setForm(null, null, '${cat.id}', null, null, null, null, 'title')">${cat.tag}</span>, `; });
 					movie.categorysearchtag = movie.categorysearchtag.slice(0, -2);
 					movie.directorname = '';
 					movie.director.forEach((dir) => { movie.directorname += (dir.name!='' ? `${dir.name}-` : ''); });
 					movie.directorname = movie.directorname.slice(0, -1);
 					movie.directornamecountry = '';
 					movie.director.forEach((dnc) => {
-						movie.directornamecountry += (dnc.name!='' ? `<span onclick="setForm(null, '${dnc.name}', null, null, null, null, null, null, null, 'yearasc')">${dnc.name}</span>` : '');
+						movie.directornamecountry += (dnc.name!='' ? `<span onclick="setForm(null, '${dnc.name}', null, null, null, null, null, 'yearasc')">${dnc.name}</span>` : '');
 						movie.directornamecountry += (dnc.country ? `<img class="flag" src="https://www.ianasheu.com/video/flags/${(dnc.country ? dnc.country.toLowerCase() : "null")}.svg" alt="flag" title="${dnc.state}"> - ` : " - ");
 					});
 					movie.directornamecountry = movie.directornamecountry.slice(0, -3);
 					movie.minratinginput = Math.floor(parseFloat(movie.rating) * 2) / 2;
 					movie.maxratinginput = Math.ceil(parseFloat(movie.rating) * 2) / 2;
-					movie.ratingminmax = `<span onclick="setForm(null, null, null, null, null, null, null, ${movie.minratinginput}, ${movie.maxratinginput}, 'ratingasc')">${movie.rating}</span>`;
+					movie.ratingminmax = `<span onclick="setForm(null, null, null, null, null, ${movie.minratinginput}, ${movie.maxratinginput}, 'ratingasc')">${movie.rating}</span>`;
 					movie.minyearinput = Math.floor(parseInt(movie.year) / 10) * 10;
 					movie.maxyearinput = Math.ceil(parseInt(movie.year) / 10) * 10;
-					movie.yearminmax = `<span onclick="setForm(null, null, null, null, null, ${movie.minyearinput}, ${movie.maxyearinput}, null, null, 'yearasc')">${movie.year}</span>`;
+					movie.yearminmax = `<span onclick="setForm(null, null, null, ${movie.minyearinput}, ${movie.maxyearinput}, null, null, 'yearasc')">${movie.year}</span>`;
 
 					cardTemplate =
 `			<div class="card">
@@ -580,7 +561,6 @@ function getFilters() {
 		filters = [];
 
 	let newstrict = null, newkeyword = null,
-		newmovie = null, newdirector = null,
 		newcategory = null,
 		newminyearinput = null, newmaxyearinput = null,
 		newminratinginput = null, newmaxratinginput = null,
@@ -593,12 +573,6 @@ function getFilters() {
 				break;
 			case 'keyword':
 				newkeyword = value.replaceAll("*", " ").trim();
-				break;
-			case 'movie':
-				newmovie = value.replaceAll("*", " ").trim();
-				break;
-			case 'director':
-				newdirector = value.replaceAll("*", " ").trim();
 				break;
 			case 'category':
 				newcategory = value;
@@ -621,18 +595,16 @@ function getFilters() {
 		}
 	});
 
-	setForm(newstrict, newkeyword, newmovie, newdirector, newcategory, newminyearinput, newmaxyearinput, newminratinginput, newmaxratinginput, neworderby);
+	setForm(newstrict, newkeyword, newcategory, newminyearinput, newmaxyearinput, newminratinginput, newmaxratinginput, neworderby);
 	window.history.replaceState(null, '', FRONTroot);
 }
 
 
 /* define url parameters from search form values */
 function setFilters(reload = false) {
-	let filters = '', currentsearchkeyword = '', currentsearchmoviedirector = '';
+	let filters = '';
 	const currentstrict = document.getElementById("strict").checked;
 	const currentkeyword = document.getElementById("keyword").value.trim().replace(/\s+/g, " ");
-	const currentmovie = document.getElementById("movie").value.trim().replace(/\s+/g, " ");
-	const currentdirector = document.getElementById("director").value.trim().replace(/\s+/g, " ");
 	let currentcategory = new Array();
 	document.querySelectorAll('input[id^="category"]:checked').forEach((chk) => {currentcategory.push(parseInt(chk.value))});
 	const currentminyearinput = document.getElementById("minyearinput").value;
@@ -649,18 +621,7 @@ function setFilters(reload = false) {
 		}
 	}
 	if (currentkeyword != initkeyword) {
-		currentsearchkeyword += "&keyword=*"+encodeURIComponent(currentkeyword.replace(/\s/g, "*"))+"*";
-	}
-	if (currentmovie != initmovie) {
-		currentsearchmoviedirector += "&movie=*"+encodeURIComponent(currentmovie.replace(/\s/g, "*"))+"*";
-	}
-	if (currentdirector != initdirector) {
-		currentsearchmoviedirector += "&director=*"+encodeURIComponent(currentdirector.replace(/\s/g, "*"))+"*";
-	}
-	if (!currentstrict) {
-		filters += currentsearchkeyword;
-	} else {
-		filters += currentsearchmoviedirector;
+		filters += "&keyword=*"+encodeURIComponent(currentkeyword.replace(/\s/g, "*"))+"*";
 	}
 	if (currentcategory.toString() != initcategory.toString()) {
 		filters += "&category="+currentcategory.toString();
@@ -696,21 +657,12 @@ function setFilters(reload = false) {
 
 
 /* setup search form values */
-function setForm(newstrict, newkeyword, newmovie, newdirector, newcategory, newminyearinput, newmaxyearinput, newminratinginput, newmaxratinginput, neworderby) {
+function setForm(newstrict, newkeyword, newcategory, newminyearinput, newmaxyearinput, newminratinginput, newmaxratinginput, neworderby) {
 
 	newstrict = (newstrict == undefined ? initstrict : newstrict);
 	strict.checked = newstrict;
-	if (newstrict) {
-		document.getElementById("searchkeyword").style.display = 'none';
-		document.getElementById("searchmoviedirector").style.display = 'initial';
-	} else {
-		document.getElementById("searchkeyword").style.display = 'initial';
-		document.getElementById("searchmoviedirector").style.display = 'none';
-	}
 
 	document.getElementById("keyword").value = (newkeyword == undefined ? initkeyword : newkeyword);
-	document.getElementById("movie").value = (newmovie == undefined ? initmovie : newmovie);
-	document.getElementById("director").value = (newdirector == undefined ? initdirector : newdirector);
 
 	if (newcategory == undefined) {
 		document.querySelectorAll('input[id^="category"]:checked').forEach((chk) => {chk.checked = false;});
@@ -747,13 +699,8 @@ function typeKeyword(event) {
 	if ((event.key == "F3") || ((event.ctrlKey || event.metaKey) && event.key == "f")) {
 		event.preventDefault();
 
-		if (!strict.checked) {
-			keyword.focus();
-			keyword.select();
-		} else {
-			movie.focus();
-			movie.select();
-		}
+		keyword.focus();
+		keyword.select();
 	}
 }
 
