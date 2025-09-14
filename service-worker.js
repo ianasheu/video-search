@@ -2,7 +2,7 @@ self.addEventListener('install', (event) => {
 	event.waitUntil(
 		caches.open('video-cache').then((cache) => {
 			return cache.addAll([
-				'./front.html',
+				'./index.html',
 				'./favicon.png',
 				'./assets/css/video-style.css',
 				'./assets/js/video-script.js',
