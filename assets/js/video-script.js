@@ -1,5 +1,5 @@
 /*---  Globals  ---*/
-const showLog = true; /* display few logs in console */
+const showLog = false; /* display few logs in console */
 
 const useCache = true; /* cache data in localStorage */
 const ttl = 3600; /* cache duration 1h */
@@ -140,8 +140,8 @@ document.addEventListener('DOMContentLoaded', function () {
 			}
 			getFilters();
 		});
-		reqCat.addEventListener('abort', () => console.log("Category List Annulation Ajax"));
 		reqCat.addEventListener('timeout', () => console.log("Category List Timeout Ajax"));
+		reqCat.addEventListener('abort', () => console.log("Category List Annulation Ajax"));
 		reqCat.addEventListener('error', () => console.log("Category List Erreur Ajax"));
 		reqCat.timeout = ajaxTimeout;
 		reqCat.responseType = "json";
@@ -373,7 +373,6 @@ document.addEventListener('DOMContentLoaded', function () {
 	function timeoutFromAjax() {
 
 		if (showLog) console.log("Timeout Ajax");
-
 		const msg = document.createElement("span");
 		const retryLink = document.createElement("a");
 		retryLink.href = "#";
@@ -423,43 +422,43 @@ document.addEventListener('DOMContentLoaded', function () {
 				let cardTemplate = '';
 				listResult.forEach((movie) => {
 
-					movie.categorytagtitle = '';
-					movie.category.forEach((cat) => { movie.categorytagtitle += `${cat.tag}, `; });
-					movie.categorytagtitle = movie.categorytagtitle.slice(0, -2);
-					movie.categorysearchtag = '';
-					movie.category.forEach((cat) => { movie.categorysearchtag += `<span onclick="setForm(null, null, '${cat.id}', null, null, null, null, 'title')">${cat.tag}</span>, `; });
-					movie.categorysearchtag = movie.categorysearchtag.slice(0, -2);
-					movie.directorname = '';
-					movie.director.forEach((dir) => { movie.directorname += (dir.name!='' ? `${dir.name}-` : ''); });
-					movie.directorname = movie.directorname.slice(0, -1);
-					movie.directornamecountry = '';
+					moviecategorytagtitle = '';
+					movie.category.forEach((cat) => { moviecategorytagtitle += `${cat.tag}, `; });
+					moviecategorytagtitle = moviecategorytagtitle.slice(0, -2);
+					moviecategorysearchtag = '';
+					movie.category.forEach((cat) => { moviecategorysearchtag += `<span onclick="setForm(null, null, '${cat.id}', null, null, null, null, 'title')">${cat.tag}</span>, `; });
+					moviecategorysearchtag = moviecategorysearchtag.slice(0, -2);
+					moviedirectorname = '';
+					movie.director.forEach((dir) => { moviedirectorname += (dir.name!='' ? `${dir.name}-` : ''); });
+					moviedirectorname = moviedirectorname.slice(0, -1);
+					moviedirectornamecountry = '';
 					movie.director.forEach((dnc) => {
-						movie.directornamecountry += (dnc.name!='' ? `<span onclick="setForm(null, '${dnc.name}', null, null, null, null, null, 'yearasc')">${dnc.name}</span>` : '');
-						movie.directornamecountry += (dnc.country ? `<img class="flag" src="https://www.ianasheu.com/video/flags/${(dnc.country ? dnc.country.toLowerCase() : "null")}.svg" alt="flag" title="${dnc.state}"> - ` : " - ");
+						moviedirectornamecountry += (dnc.name!='' ? `<span onclick="setForm(null, '${dnc.name}', null, null, null, null, null, 'yearasc')">${dnc.name}</span>` : '');
+						moviedirectornamecountry += (dnc.country ? `<img class="flag" src="https://www.ianasheu.com/video/flags/${(dnc.country ? dnc.country.toLowerCase() : "null")}.svg" alt="flag" title="${dnc.state}"> - ` : " - ");
 					});
-					movie.directornamecountry = movie.directornamecountry.slice(0, -3);
-					movie.minratinginput = Math.floor(parseFloat(movie.rating) * 2) / 2;
-					movie.maxratinginput = Math.ceil(parseFloat(movie.rating) * 2) / 2;
-					movie.ratingminmax = `<span onclick="setForm(null, null, null, null, null, ${movie.minratinginput}, ${movie.maxratinginput}, 'ratingasc')">${movie.rating}</span>`;
-					movie.minyearinput = Math.floor(parseInt(movie.year) / 10) * 10;
-					movie.maxyearinput = Math.ceil(parseInt(movie.year) / 10) * 10;
-					movie.yearminmax = `<span onclick="setForm(null, null, null, ${movie.minyearinput}, ${movie.maxyearinput}, null, null, 'yearasc')">${movie.year}</span>`;
+					moviedirectornamecountry = moviedirectornamecountry.slice(0, -3);
+					movieminratinginput = Math.floor(parseFloat(movie.rating) * 2) / 2;
+					moviemaxratinginput = Math.ceil(parseFloat(movie.rating) * 2) / 2;
+					movieratingminmax = `<span onclick="setForm(null, null, null, null, null, ${movieminratinginput}, ${moviemaxratinginput}, 'ratingasc')">${movie.rating}</span>`;
+					movieminyearinput = Math.floor(parseInt(movie.year) / 10) * 10;
+					moviemaxyearinput = Math.ceil(parseInt(movie.year) / 10) * 10;
+					movieyearminmax = `<span onclick="setForm(null, null, null, ${movieminyearinput}, ${moviemaxyearinput}, null, null, 'yearasc')">${movie.year}</span>`;
 
 					cardTemplate =
 `			<div class="card">
-				<img class="poster" src="https://www.ianasheu.com/video/affiches/${movie.poster}" alt="poster" title="${movie.title} (${(movie.directorname ? movie.directorname+"-" : '')}${movie.year})">
+				<img class="poster" src="https://www.ianasheu.com/video/affiches/${movie.poster}" alt="poster" title="${movie.title} (${(moviedirectorname ? moviedirectorname+"-" : '')}${movie.year})">
 				<div class="cardbody">
 					<div class="bodylign1">
 						<h3 class="title" title="${movie.title}">${movie.title}</h3>
 						<div><a href="https://www.allocine.fr/film/fichefilm_gen_cfilm=${movie.allocine}.html" target="_blank" tabindex="-1"><img class="extlink" src="./assets/img/external-link.svg" alt="allocine" title="allocine"></a></div>
 					</div>
 					<div class="bodylign2">
-						<div class="category" title="${movie.categorytagtitle}">${movie.categorysearchtag}</div>
-						<div class="rating" title="${movie.rating}"><img class="star" src="./assets/img/half-star.svg" alt="rating" title="rating">&nbsp;${movie.ratingminmax}</div>
+						<div class="category" title="${moviecategorytagtitle}">${moviecategorysearchtag}</div>
+						<div class="rating" title="${movie.rating}"><img class="star" src="./assets/img/half-star.svg" alt="rating" title="rating">&nbsp;${movieratingminmax}</div>
 					</div>
 					<div class="bodylign3">
-						<div class="director" title="${movie.directorname}">${movie.directornamecountry}</div>
-						<div class="year" title="${movie.year}">${movie.yearminmax}</div>
+						<div class="director" title="${moviedirectorname}">${moviedirectornamecountry}</div>
+						<div class="year" title="${movie.year}">${movieyearminmax}</div>
 					</div>
 				</div>
 			</div>
@@ -539,6 +538,7 @@ function clearCache(forced) {
 function getFilters() {
 
 	let storageFilters = window.localStorage.getItem(reloadFilters);
+
 	if (storageFilters) {
 		storageFilters = JSON.parse(storageFilters);
 		const now = new Date();
@@ -602,6 +602,7 @@ function getFilters() {
 
 /* define url parameters from search form values */
 function setFilters(reload = false) {
+
 	let filters = '';
 	const currentstrict = document.getElementById("strict").checked;
 	const currentkeyword = document.getElementById("keyword").value.trim().replace(/\s+/g, " ");
@@ -707,6 +708,7 @@ function typeKeyword(event) {
 
 /* convert a string to a hash */
 function stringToHash(string) {
+
 	let hash = 0;
 
 	if (string.length == 0) return hash;
@@ -730,6 +732,7 @@ function uuid() {
 
 /* eval if brother run on mobile */
 function isMobile() {
+
 	const toMatch = [
 			/Android/i,
 			/webOS/i,
@@ -750,6 +753,7 @@ function isMobile() {
 
 /* return root foot size */
 function getRemInPx() {
+
 	const fontSize = getComputedStyle(document.documentElement).fontSize;
 
 	return parseFloat(fontSize);
