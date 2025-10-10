@@ -694,7 +694,7 @@ function setForm(newstrict, newkeyword, newcategory, newminyearinput, newmaxyear
 }
 
 
-/* used by keyboard down to focus on search input */
+/* used by keyboard down to focus on search input or clear entire form */
 function typeKeyword(event) {
 
 	if ((event.key == "F3") || ((event.ctrlKey || event.metaKey) && event.key == "f")) {
@@ -702,6 +702,11 @@ function typeKeyword(event) {
 
 		keyword.focus();
 		keyword.select();
+	} else
+	if (event.ctrlKey && event.key === 'Delete') {
+		event.preventDefault();
+
+		setForm();
 	}
 }
 
@@ -719,6 +724,7 @@ function stringToHash(string) {
 	}
 	return hash;
 }
+
 
  /* return unique id */
 function uuid() {
