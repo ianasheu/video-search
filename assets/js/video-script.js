@@ -439,9 +439,11 @@ document.addEventListener('DOMContentLoaded', function () {
 					moviedirectornamecountry = moviedirectornamecountry.slice(0, -3);
 					movieminratinginput = Math.floor(parseFloat(movie.rating) * 2) / 2;
 					moviemaxratinginput = Math.ceil(parseFloat(movie.rating) * 2) / 2;
+					moviemaxratinginput = movieminratinginput == moviemaxratinginput ? moviemaxratinginput + 0.5 : moviemaxratinginput;
 					movieratingminmax = `<span onclick="setForm(null, null, null, null, null, ${movieminratinginput}, ${moviemaxratinginput}, 'ratingasc')">${movie.rating}</span>`;
 					movieminyearinput = Math.floor(parseInt(movie.year) / 10) * 10;
 					moviemaxyearinput = Math.ceil(parseInt(movie.year) / 10) * 10;
+					moviemaxyearinput = movieminyearinput == moviemaxyearinput ? moviemaxyearinput + 10 : moviemaxyearinput;
 					movieyearminmax = `<span onclick="setForm(null, null, null, ${movieminyearinput}, ${moviemaxyearinput}, null, null, 'yearasc')">${movie.year}</span>`;
 
 					cardTemplate =
