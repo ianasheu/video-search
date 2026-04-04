@@ -433,7 +433,7 @@ document.addEventListener('DOMContentLoaded', function () {
 					moviedirectorname = moviedirectorname.slice(0, -1);
 					moviedirectornamecountry = '';
 					movie.director.forEach((dnc) => {
-						moviedirectornamecountry += (dnc.name!='' ? `<span onclick="setForm(null, '${dnc.name}', null, null, null, null, null, 'yearasc')">${dnc.name}</span>` : '');
+						moviedirectornamecountry += (dnc.name!='' ? `<span onclick="setForm(true, '${dnc.name}', null, null, null, null, null, 'yearasc')">${dnc.name}</span>` : '');
 						moviedirectornamecountry += (dnc.country ? `<img class="flag" src="https://www.ianasheu.com/video/flags/${(dnc.country ? dnc.country.toLowerCase() : "null")}.svg" alt="flag" title="${dnc.state}"> - ` : " - ");
 					});
 					moviedirectornamecountry = moviedirectornamecountry.slice(0, -3);
