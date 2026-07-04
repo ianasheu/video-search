@@ -451,7 +451,7 @@ document.addEventListener('DOMContentLoaded', function () {
 				<img class="poster" src="https://www.ianasheu.com/video/affiches/${movie.poster}" alt="poster" title="${movie.title} (${(moviedirectorname ? moviedirectorname+"-" : '')}${movie.year})">
 				<div class="cardbody">
 					<div class="bodylign1">
-						<h3 class="title" title="${movie.title}">${movie.title}</h3>
+						<h3 class="title" title="${movie.title}"><a href="https://www.allocine.fr/film/fichefilm_gen_cfilm=${movie.allocine}.html" target="_blank">${movie.title}</a></h3>
 						<div><a href="https://www.allocine.fr/film/fichefilm_gen_cfilm=${movie.allocine}.html" target="_blank" tabindex="-1"><img class="extlink" src="./assets/img/external-link.svg" alt="allocine" title="allocine"></a></div>
 					</div>
 					<div class="bodylign2">

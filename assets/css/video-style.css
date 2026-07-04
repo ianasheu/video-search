@@ -48,13 +48,21 @@ a:visited {
 	color: var(--color-link-text);
 	background-color: var(--color-link-bg);
 	text-decoration: none;
+	outline: none;
 }
 a:hover,
-a:focus {
+a:active {
 	color: var(--color-link-text-hover);
 	background-color: var(--color-link-bg-hover);
 	text-decoration: underline;
-	outline: 0;
+	outline: none;
+}
+a:focus-visible,
+a:focus {
+	color: var(--color-link-text-hover);
+	background-color: var(--color-link-bg-hover);
+	text-decoration: none;
+	outline: 1px solid var(--color-link-text-hover);
 }
 input,
 label,
@@ -389,10 +397,23 @@ button:hover {
 	justify-content: space-between;
 	align-items: start;
 }
-.bodylign1>div>a:link,
-.bodylign1>div>a:hover {
+.bodylign1 a:link,
+.bodylign1 a:visited,
+.bodylign1 a:hover,
+.bodylign1 a:active {
+	padding: 1px;
+	color: var(--color-text);
 	background-color: transparent;
+	text-decoration: none !important;
+	outline: none !important;
 }
+.bodylign1 a:focus-visible,
+.bodylign1 a:focus {
+	outline-offset: -1px;
+	text-decoration: none !important;
+	outline: 1px solid var(--color-link-text-hover) !important;
+}
+
 .bodylign2 {
 	display: flex;
 	justify-content: space-between;
