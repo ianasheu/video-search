@@ -401,7 +401,7 @@ button:hover {
 .bodylign1 a:visited,
 .bodylign1 a:hover,
 .bodylign1 a:active {
-	padding: 1px;
+	padding: 1px 2px;
 	color: var(--color-text);
 	background-color: transparent;
 	text-decoration: none !important;
@@ -410,8 +410,18 @@ button:hover {
 .bodylign1 a:focus-visible,
 .bodylign1 a:focus {
 	outline-offset: -1px;
+	color: var(--color-text);
+	background-color: transparent;
+}
+.bodylign1>h3>a:focus-visible,
+.bodylign1>h3>a:focus {
 	text-decoration: none !important;
-	outline: 1px solid var(--color-link-text-hover) !important;
+	outline: 1px solid var(--color-text) !important;
+}
+.bodylign1>div>a:focus-visible,
+.bodylign1>div>a:focus {
+	text-decoration: none !important;
+	outline: none !important;
 }
 
 .bodylign2 {
